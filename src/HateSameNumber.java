@@ -1,0 +1,74 @@
+public class HateSameNumber {
+    /*
+        [같은 숫자는 싫어]
+
+        문제 설명
+
+        배열 arr가 주어집니다.
+        배열 arr의 각 원소는 숫자 0부터 9까지로 이루어져 있습니다.
+        이때, 배열 arr에서 연속적으로 나타나는 숫자는 하나만 남기고 전부 제거하려고 합니다.
+        배열 arr에서 제거 되고 남은 수들을 return 하는 solution 함수를 완성해 주세요.
+        단, 제거된 후 남은 수들을 반환할 때는 배열 arr의 원소들의 순서를 유지해야 합니다.
+
+        예를들면
+            arr = [1, 1, 3, 3, 0, 1, 1] 이면 [1, 3, 0, 1] 을 return 합니다.
+            arr = [4, 4, 4, 3, 3] 이면 [4, 3] 을 return 합니다.
+        배열 arr에서 연속적으로 나타나는 숫자는 제거하고 남은 수들을 return 하는 solution 함수를 완성해 주세요.
+
+
+        제한사항
+
+        배열 arr의 크기 : 1,000,000 이하의 자연수
+        배열 arr의 원소의 크기 : 0보다 크거나 같고 9보다 작거나 같은 정수
+
+
+        입출력 예
+
+        arr                 answer
+        [1,1,3,3,0,1,1]     [1,3,0,1]
+        [4,4,4,3,3]         [4,3]
+     */
+
+    /*
+        하루에 하나의 문제는 끝마칠 수 있도록 합시다!!
+
+        그리고 개발한 일시/시간을 꼭 적어주세요.
+        몇번에 나누어서 작업하였으면 아래 예시처럼 모두 적어주세요.
+
+        예시1> 1/14 10:30 ~ 12:00
+        예시2> 1/14 15:00 ~ 16:00
+
+
+        작업1> 43:25:25
+     */
+
+    public static void main(String[] args) {
+        int[] arr = {4,4,4,3,3,4,4,5,5,5,5,2,1,4,5,1,5,1};
+        int[] print = solution(arr);
+
+        for(int i = 0; i < print.length; i++) {
+            System.out.print(print[i] + "  ");
+        }
+    }
+
+    public static int[] solution(int[] arr) {
+        int[] answer = new int[arr.length];
+        int number = -1;
+        int index = 0;
+
+        for(int i = 0; i < arr.length; i++) {
+            if(arr[i] != number) {
+                number = arr[i];
+                answer[index++] = number;
+            }
+        }
+
+        int[] answers = new int[index];
+
+        for(int i = 0; i < index; i++) {
+            answers[i] = answer[i];
+        }
+
+        return answers;
+    }
+}
