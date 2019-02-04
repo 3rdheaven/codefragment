@@ -52,22 +52,14 @@ public class Deck {
         checkFourCards(cards, result);
         checkFullHouse(cards, result);
         /*checkFlush(cards, result);
-        /*checkStraight(cards, result);
-        /*checkTriple(cards, result);
-        /*checkTwoPair(cards, result);
-        /*checkOnePiar(cards, result);
+        /*checkStraight(cards, result);*/
+        checkTriple(cards, result);
+        checkPair(cards, result);
         /*checkTop(cards, result);*/
 
+        System.out.println(result.toString());
 
-        if(isStraightFlush(cards)) return findTopCard(cards).getNumber() + " 스트레이트 플러쉬";
-        else if(result.what == Result.FOUR_CARDS) return result.top + " 포커";
-        else if(result.what == Result.FULL_HOUSE) return result.top + " 풀 하우스";
-        else if(isFlush(cards)) return findTopCard(cards).getNumber() + " 플러쉬";
-        else if(isStraight(cards)) return findTopCard(cards).getNumber() + " 스트레이트";
-        else if(isTriple(cards)) return findTopCard(cards).getNumber() + " 트리플";
-        else if(isTwoPair(cards)) return findTopCard(cards).getNumber() + " 투페어";
-        else if(isOnePair(cards)) return findTopCard(cards).getNumber() + " 원페어";
-        return findTopCard(cards).number + "탑";
+        return result.text();
     }
 
     private void checkStraightFlush(Card[] cards, Result result) {
@@ -78,20 +70,23 @@ public class Deck {
     private void checkFourCards(Card[] cards, Result result) {
         if(result.isDone()) return;
 
-        HaechiArray array = sameNumbers(cards, FOUR_CARDS);
+        HaechiArray tops = sameNumbers(cards, FOUR_CARDS);
 
-        if(!array.isEmpty()) {
+        if(!tops.isEmpty()) {
             result.what = Result.FOUR_CARDS;
-            result.top = array.first();
+            result.top = tops.first();
         }
     }
 
     private void checkFullHouse(Card[] cards, Result result) {
         if(result.isDone()) return;
 
-        if(sameCount(cards, PAIR) >= 1 && sameCount(cards, TRIPLE) >= 1) {
+        HaechiArray tripleTops = sameNumbers(cards , TRIPLE);
+        HaechiArray pairTops = sameNumbers(cards , PAIR);
+
+        if(!tripleTops.isEmpty() && !pairTops.isEmpty()) {
             result.what = Result.FULL_HOUSE;
-            result.top = topCard(cards);
+            result.top = tripleTops.first();
         }
     }
 
@@ -100,6 +95,34 @@ public class Deck {
              result.what = Result.FLUSH;
              result.top = topCards(cards);
          }
+    }
+
+    private void checkTriple(Card[] cards, Result result) {
+        if(result.isDone()) return;
+
+        HaechiArray tops = sameNumbers(cards, TRIPLE);
+
+        if(!tops.isEmpty()) {
+            result.what = Result.TRIPLE;
+            result.top = tops.first();
+        }
+    }
+
+    private void checkPair(Card[] cards, Result result) {
+        if(result.isDone()) return;
+
+        HaechiArray tops = sameNumbers(cards, PAIR);
+        tops.sort(false);
+
+        if(tops.size() > 0) {
+            result.what = tops.size() == 1 ? Result.ONE_PAIR : Result.TWO_PAIR;
+            result.top = tops.first();
+            result.tops = tops;
+
+            for(int i = 0; i < cards.length; i++) {
+                if(!cards[i].checked) result.others.add(cards[i].number);
+            }
+        }
     }
 
     private int topCard(Card[] cards) {
@@ -137,16 +160,6 @@ public class Deck {
             if (count >= 5) return true;
         }
 
-        return false;
-    }
-
-    private boolean isFourCards(Card[] cards) {
-        if(sameCount(cards, FOUR_CARDS) >= 1) return true;
-        return false;
-    }
-
-    private boolean isFullHouse(Card[] cards) {
-        if(isOnePair(cards) && isTriple(cards)) return true;
         return false;
     }
 
@@ -207,21 +220,6 @@ public class Deck {
         return false;
     }
 
-    private boolean isTriple(Card[] cards) {
-        if(sameCount(cards, TRIPLE) >= 1) return true;
-        return false;
-    }
-
-    private boolean isTwoPair(Card[] cards) {
-        if(sameCount(cards, PAIR) >= 2) return true;
-        return false;
-    }
-
-    private boolean isOnePair(Card[] cards) {
-        if(sameCount(cards, PAIR) >= 1) return true;
-        return false;
-    }
-
     private HaechiArray sameNumbers(Card[] cards, int type) {
         HaechiArray array = new HaechiArray();
 
@@ -242,44 +240,14 @@ public class Deck {
                 }
             }
 
-            if(count >= 2) array.add(cards[i].number);
+            if(count == 2 && type == PAIR) array.add(cards[i].number);
+            else if(count == 3 && type == TRIPLE) array.add(cards[i].number);
+            else if(count == 4 && type == FOUR_CARDS) array.add(cards[i].number);
         }
 
         return array;
     }
 
-    private int sameCount(Card[] cards, int type) {
-        int pairCount = 0;
-        int tripleCount = 0;
-        int fourCardsCount = 0;
-
-        clearChecked();
-
-        for(int i = 0; i < cards.length - 1; i++) {
-            if(cards[i].checked) continue;
-
-            int count = 1;
-
-            for(int j = (i + 1); j < cards.length; j++) {
-                if(cards[j].checked) continue;
-
-                if(cards[i].number == cards[j].number) {
-                    cards[i].checked = true;
-                    cards[j].checked = true;
-                    count++;
-                }
-            }
-
-            if(count == 2) pairCount++;
-            else if(count == 3) tripleCount++;
-            else if(count == 4) fourCardsCount++;
-        }
-
-        if(type == PAIR) return pairCount;
-        else if(type == TRIPLE) return tripleCount;
-        else if(type == FOUR_CARDS) return fourCardsCount;
-        return 0;
-    }
 
     private Card findTopCard(Card[] cards) {
         sort(cards, false);
@@ -308,14 +276,6 @@ public class Deck {
     private void clearChecked() {
         for(int i = 0; i < cards.length; i++) {
             cards[i].checked = false;
-        }
-    }
-
-    private void test() {
-        for(int i = 0; i < cards.length; i++) {
-            System.out.print(cards[i].number + " ");
-            System.out.print(cards[i].shape + " ");
-            System.out.println();
         }
     }
 }

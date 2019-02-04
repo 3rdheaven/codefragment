@@ -80,12 +80,14 @@ public class HaechiArray {
         length = 0;
     }
 
-    public void print() {
+    public String toString() {
+        String result = "";
+
         for(int i = 0; i < length; i++) {
-            System.out.print(array[i] + "  ");
+            result += array[i] + " ";
         }
 
-        System.out.println();
+        return result;
     }
 
     private boolean isValidIndex(int index) {

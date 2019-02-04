@@ -14,11 +14,11 @@ public class Main {
         System.out.println();
         System.out.println();
 
-        cards[0].number = 3;
-        cards[1].number = 3;
+        cards[0].number = 4;
+        cards[1].number = 5;
         cards[2].number = 3;
-        cards[3].number = 4;
-        cards[4].number = 5;
+        cards[3].number = 10;
+        cards[4].number = 3;
 
         /*cards[0].number = 14;
         cards[1].number = 13;
@@ -44,7 +44,7 @@ public class Main {
         cards[5].shape = 1;
         cards[6].shape = 2;*/
 
-        //System.out.println(deck.getResult(cards));
+        System.out.println(deck.getResult(cards));
 
         for(int i = 0; i < cards.length; i++) {
             System.out.print(cards[i].getShape() + cards[i].getNumber() + " ");
