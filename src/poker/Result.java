@@ -40,7 +40,7 @@ public class Result {
     }
     
     public String text() {
-        return top + " " + levels[what];
+        return Card.getNumber(top) + " " + levels[what];
     }
 
     @Override

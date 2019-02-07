@@ -51,11 +51,11 @@ public class Deck {
         checkStraightFlush(cards, result);
         checkFourCards(cards, result);
         checkFullHouse(cards, result);
-        /*checkFlush(cards, result);
-        /*checkStraight(cards, result);*/
+        checkFlush(cards, result);
+        checkStraight(cards, result);
         checkTriple(cards, result);
         checkPair(cards, result);
-        /*checkTop(cards, result);*/
+        checkTop(cards, result);
 
         System.out.println(result.toString());
 
@@ -64,7 +64,11 @@ public class Deck {
 
     private void checkStraightFlush(Card[] cards, Result result) {
         if(result.isDone()) return;
-        //result.what = Result.STRAIGHT_FLUSH;
+
+        if(isStraight(cards) && isFlush(cards)) {
+            result.what = Result.STRAIGHT_FLUSH;
+            findTops(cards, result);
+        }
     }
 
     private void checkFourCards(Card[] cards, Result result) {
@@ -91,10 +95,21 @@ public class Deck {
     }
 
     private void checkFlush(Card[] cards, Result result) {
-         if(isFlush(cards)) {
-             result.what = Result.FLUSH;
-             result.top = topCards(cards);
-         }
+        if(result.isDone()) return;
+
+        if(isFlush(cards)) {
+            result.what = Result.FLUSH;
+            findTops(cards, result);
+        }
+    }
+
+    private void checkStraight(Card[] cards, Result result) {
+        if(result.isDone()) return;
+
+        if(isStraight(cards)) {
+            result.what = Result.STRAIGHT;
+            findTops(cards, result);
+        }
     }
 
     private void checkTriple(Card[] cards, Result result) {
@@ -114,7 +129,7 @@ public class Deck {
         HaechiArray tops = sameNumbers(cards, PAIR);
         tops.sort(false);
 
-        if(tops.size() > 0) {
+        if(!tops.isEmpty()) {
             result.what = tops.size() == 1 ? Result.ONE_PAIR : Result.TWO_PAIR;
             result.top = tops.first();
             result.tops = tops;
@@ -125,43 +140,11 @@ public class Deck {
         }
     }
 
-    private int topCard(Card[] cards) {
-        for(int i = 0; i < cards.length; i++) {
-            if (cards[i].checked) return cards[i].number;
-        }
-
-        return 0;
+    private void checkTop(Card[] cards, Result result) {
+        if(result.isDone()) return;
+        if(findTops(cards, result)) result.what = Result.TOP;
     }
 
-    private int topCards(Card[] cards) {
-        /*for(int i = 0; i < cards.length; i++) {
-            if(cards[i].checked)
-        }*/
-
-        return 0;
-    }
-
-    private boolean isStraightFlush(Card[] cards) {
-        if(isStraight(cards) && checkFlushOfStraightFlush(cards)) return true;
-        return false;
-    }
-
-    private boolean checkFlushOfStraightFlush(Card[] cards) {
-        for (int i = 0; i < (cards.length - 1); i++) {
-            int count = 1;
-
-            if(!cards[i].checked) continue;
-
-            for (int j = (i + 1); j < cards.length; j++) {
-                if(!cards[j].checked) continue;
-                else if (cards[i].shape == cards[j].shape) count++;
-            }
-
-            if (count >= 5) return true;
-        }
-
-        return false;
-    }
 
     private boolean isFlush(Card[] cards) {
         for(int i = 0; i < (cards.length - 1); i++) {
@@ -212,6 +195,20 @@ public class Deck {
         return true;
     }
 
+    private boolean findTops(Card[] cards, Result result) {
+        if(cards.length <= 0) return false;
+
+        sort(cards, false);
+
+        result.top = cards[0].number;
+
+        for(int i = 0; i < cards.length; i++) {
+            result.tops.add(cards[i].number);
+        }
+
+        return true;
+    }
+
     private boolean existsNumber(Card[] cards, int number) {
         for(int i = 0; i < cards.length; i++) {
             if(cards[i].number == number) return true;
@@ -246,17 +243,6 @@ public class Deck {
         }
 
         return array;
-    }
-
-
-    private Card findTopCard(Card[] cards) {
-        sort(cards, false);
-
-        for(int i = 0; i < cards.length; i++) {
-            if(cards[i].checked) return cards[i];
-        }
-
-        return cards[0];
     }
 
     private void sort(Card[] cards, boolean ascending) {
