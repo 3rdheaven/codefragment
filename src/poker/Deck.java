@@ -1,5 +1,6 @@
 package poker;
 
+import sun.awt.geom.AreaOp;
 import test.HaechiArray;
 
 public class Deck {
@@ -45,7 +46,7 @@ public class Deck {
         return cards[(int)(Math.random() * 52)];
     }
 
-    public String getResult(Card[] cards) {
+    public Result getResult(Card[] cards) {
         Result result = new Result();
 
         checkStraightFlush(cards, result);
@@ -59,7 +60,7 @@ public class Deck {
 
         System.out.println(result.toString());
 
-        return result.text();
+        return result;
     }
 
     private void checkStraightFlush(Card[] cards, Result result) {
@@ -149,7 +150,7 @@ public class Deck {
     private boolean isFlush(Card[] cards) {
         for(int i = 0; i < (cards.length - 1); i++) {
             int count = 1;
-            clearChecked();
+            clearChecked(cards);
 
             for(int j = (i + 1); j < cards.length; j++) {
                 if (cards[i].shape == cards[j].shape) {
@@ -168,7 +169,7 @@ public class Deck {
     private boolean isStraight(Card[] cards) {
         int count = 1;
 
-        clearChecked();
+        clearChecked(cards);
         sort(cards, false);
 
         if(isBackStraight(cards)) return true;
@@ -220,7 +221,7 @@ public class Deck {
     private HaechiArray sameNumbers(Card[] cards, int type) {
         HaechiArray array = new HaechiArray();
 
-        clearChecked();
+        clearChecked(cards);
 
         for(int i = 0; i < cards.length - 1; i++) {
             if(cards[i].checked) continue;
@@ -245,7 +246,7 @@ public class Deck {
         return array;
     }
 
-    private void sort(Card[] cards, boolean ascending) {
+    public static void sort(Card[] cards, boolean ascending) {
         Card temp;
 
         for(int i = 0; i < cards.length - 1; i++) {
@@ -259,7 +260,7 @@ public class Deck {
         }
     }
 
-    private void clearChecked() {
+    private void clearChecked(Card[] cards) {
         for(int i = 0; i < cards.length; i++) {
             cards[i].checked = false;
         }
