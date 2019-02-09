@@ -3,6 +3,7 @@ package poker;
 public class Main {
     public static void main(String[] args) {
         Deck deck = new Deck();
+        ResultChecker resultChecker = new ResultChecker();
         Player p1 = new Player();
         Player p2 = new Player();
 
@@ -13,35 +14,42 @@ public class Main {
         p1.setCards(deck.drawCards(5));
         p2.setCards(deck.drawCards(5));
 
-        /*p1.cards[0].number = 4;
-        p1.cards[1].number = 14;
-        p1.cards[2].number = 14;
-        p1.cards[3].number = 4;
-        p1.cards[4].number = 8;
+        Card[] cards1 = p1.getCards();
+        Card[] cards2 = p2.getCards();
+        
+        cards1[0].setNumber(14);
+        cards1[1].setNumber(9);
+        cards1[2].setNumber(9);
+        cards1[3].setNumber(5);
+        cards1[4].setNumber(5);
 
-        p1.cards[0].shape = 2;
-        p1.cards[1].shape = 3;
-        p1.cards[2].shape = 2;
-        p1.cards[3].shape = 2;
-        p1.cards[4].shape = 2;
+        cards1[0].setShape(2);
+        cards1[1].setShape(1);
+        cards1[2].setShape(2);
+        cards1[3].setShape(2);
+        cards1[4].setShape(2);
 
-        p2.cards[0].number = 4;
-        p2.cards[1].number = 14;
-        p2.cards[2].number = 4;
-        p2.cards[3].number = 14;
-        p2.cards[4].number = 7;
+        cards2[0].setNumber(9);
+        cards2[1].setNumber(9);
+        cards2[2].setNumber(5);
+        cards2[3].setNumber(5);
+        cards2[4].setNumber(2);
 
-        p2.cards[0].shape = 1;
-        p2.cards[1].shape = 1;
-        p2.cards[2].shape = 1;
-        p2.cards[3].shape = 1;
-        p2.cards[4].shape = 3;*/
+        cards2[0].setShape(0);
+        cards2[1].setShape(0);
+        cards2[2].setShape(0);
+        cards2[3].setShape(0);
+        cards2[4].setShape(1);
+
+
+        resultChecker.makeResult(p1);
+        resultChecker.makeResult(p2);
 
         //System.out.println(deck.getResult(cards));
         System.out.println(p1.getName() +  ": " + p1.getCardsText() + p1.getResult().text());
         System.out.println();
         System.out.println(p2.getName() +  ": " + p2.getCardsText() + p2.getResult().text());
         System.out.println();
-        System.out.println("승자: " + p1.checkWinner(p2));
+        System.out.println("승자: " + resultChecker.determineWinner(p1 ,p2).getName());
     }
 }
